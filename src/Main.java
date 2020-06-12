@@ -1,0 +1,110 @@
+import com.alibaba.fastjson.JSONObject;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+public class Main {
+    public static void main(String[] args) {
+        switch (args[0]){
+            case "combine":{
+                combine(new File(args[1]));
+                break;
+            }
+            case "preserved":{
+                break;
+            }
+            default:{
+                help();
+            }
+        }
+    }
+
+    private static void combine(File dir){
+        File[] list = dir.listFiles();
+        StringBuilder bat = new StringBuilder();
+        if (list==null||list.length==0){
+            System.out.println("no valid dir found!");
+            return;
+        }
+        String project = "";
+        for(File secondaryDir:list){
+            File entryJsonFile = new File(secondaryDir.getPath()+"\\entry.json");
+            JSONObject entryJson = JSONObject.parseObject(readFileContent(entryJsonFile));
+            String title = entryJson.getString("title");//【吴恩达团队Tensorflow2.0实践系列课程第二课】卷积神经网络在TensorFlow2.0中的应用
+            project = title;
+            String type_tag = entryJson.getString("type_tag");//64
+            JSONObject page_data = entryJson.getJSONObject("page_data");//{...}
+            String part = page_data.getString("part");//0 Introduction, A conversation with Andrew Ng
+            String video = secondaryDir.getPath()+"\\"+type_tag+"/video.m4s";
+            String audio = secondaryDir.getPath()+"\\"+type_tag+"/audio.m4s";
+            //noinspection ResultOfMethodCallIgnored
+            new File(dir.getParent()+"\\"+title).mkdirs();
+            String output = dir.getParent()+"/"+title+"/"+part+".mkv";
+            String cmd = String.format("ffmpeg -i \"%s\" -i \"%s\" -c:v copy -c:a copy \"%s\"",video,audio,output);
+            bat.append(cmd).append(System.lineSeparator());
+        }
+        bat.append("pause>nul");
+        string2File(bat.toString(),dir.getParent()+"\\"+project+"\\"+dir.getName()+".bat");
+    }
+
+    public static void string2File(String res, String filePath) {
+        BufferedReader bufferedReader = null;
+        BufferedWriter bufferedWriter;
+        try {
+            File distFile = new File(filePath);
+            if (!distFile.getParentFile().exists()) //noinspection ResultOfMethodCallIgnored
+                distFile.getParentFile().mkdirs();
+            bufferedReader = new BufferedReader(new StringReader(res));
+            bufferedWriter = new BufferedWriter(new FileWriter(distFile));
+            char[] buf = new char[1024];
+            int len;
+            while ((len = bufferedReader.read(buf)) != -1) {
+                bufferedWriter.write(buf, 0, len);
+            }
+            bufferedWriter.flush();
+            bufferedReader.close();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String readFileContent(File file) {
+        BufferedReader reader = null;
+        StringBuilder sbf = new StringBuilder();
+        try {
+            reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
+            String tempStr;
+            while ((tempStr = reader.readLine()) != null) {
+                sbf.append(tempStr);
+            }
+            reader.close();
+            return sbf.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+    private static void help(){
+        System.out.println("support commands:");
+        System.out.println("help                              this doc");
+        System.out.println("combine[dir:numerical_name]       combine video with audio to runnable ffmpeg command line");
+    }
+}
