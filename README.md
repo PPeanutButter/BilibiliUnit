@@ -25,6 +25,6 @@ command
 
 example
 
-`java -jar BilibiliUnit.jar extract E:\video\吴恩达团队Tensorflow2.0实践系列课程第一课`
+`java -jar BilibiliUnit.jar combine E:\video\吴恩达团队Tensorflow2.0实践系列课程第一课`
 
 会在同目录下生成`吴恩达团队Tensorflow2.0实践系列课程第一课.mkv`文件
