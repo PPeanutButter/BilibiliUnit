@@ -6,11 +6,12 @@ import java.nio.charset.StandardCharsets;
 public class Main {
     public static void main(String[] args) {
         switch (args[0]){
-            case "combine":{
-                combine(new File(args[1]));
+            case "extract":{
+                extract(new File(args[1]));
                 break;
             }
-            case "preserved":{
+            case "combine":{
+                combine(new File(args[1]));
                 break;
             }
             default:{
@@ -20,6 +21,21 @@ public class Main {
     }
 
     private static void combine(File dir){
+        File[] list = dir.listFiles();
+        StringBuilder bat = new StringBuilder();
+        if (list==null||list.length==0){
+            System.out.println("no valid dir found!");
+            return;
+        }
+        bat.append("(for %%i in (*.mkv) do @echo file '%%i') > combine_task_list.txt").append(System.lineSeparator());
+        bat.append(String.format("ffmpeg -f concat -safe 0 -i combine_task_list.txt -c copy %s.mkv",dir.getName()));
+        bat.append(System.lineSeparator());
+        bat.append("del combine_task_list.txt").append(System.lineSeparator());
+        bat.append("pause>nul");
+        string2File(bat.toString(),dir.getPath()+"/"+"combine.bat");
+    }
+
+    private static void extract(File dir){
         File[] list = dir.listFiles();
         StringBuilder bat = new StringBuilder();
         if (list==null||list.length==0){
@@ -44,7 +60,7 @@ public class Main {
             bat.append(cmd).append(System.lineSeparator());
         }
         bat.append("pause>nul");
-        string2File(bat.toString(),dir.getParent()+"\\"+project+"\\"+dir.getName()+".bat");
+        string2File(bat.toString(),dir.getParent()+"\\"+project+"\\"+"extract.bat");
     }
 
     public static void string2File(String res, String filePath) {
@@ -105,6 +121,7 @@ public class Main {
     private static void help(){
         System.out.println("support commands:");
         System.out.println("help                              this doc");
-        System.out.println("combine[dir:numerical_name]       combine video with audio to runnable ffmpeg command line");
+        System.out.println("extract[dir:numerical_name]         extract video with audio(from cache directory)to runnable ffmpeg command line");
+        System.out.println("combine[dir]                        combine videos to runnable ffmpeg command line");
     }
 }
