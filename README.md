@@ -3,6 +3,7 @@ Bilibili工具箱
 
 # 傻瓜式用法
 将你要处理的文件夹拖到xxx.bat文件上（相当于输入了一遍代码，xxx是你要选择的函数名称）。
+唯一需要注意的是：BilibiliUnit.jar需要放置指定处理文件夹的同级目录（如要处理E:\video\70856556，位置为‪E:\video\BilibiliUnit.jar）
 
 # 支持的功能
 ## extract(类似唧唧下载器，但是比唧唧下载器要快10x)
