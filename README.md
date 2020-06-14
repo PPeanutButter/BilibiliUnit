@@ -11,7 +11,7 @@ Bilibili工具箱
 
 command
 
-`extract[dir:numerical_name]       extract video with audio(from cache directory)to runnable ffmpeg command line`
+`extract[dir:numerical_name]:extract video with audio(from cache directory)to runnable ffmpeg command line`
 
 example
 
@@ -24,7 +24,7 @@ example
 
 command
 
-`combine[dir]                        combine videos to runnable ffmpeg command line`
+`combine[dir]:combine videos to runnable ffmpeg command line`
 
 example
 

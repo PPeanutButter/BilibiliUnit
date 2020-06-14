@@ -42,12 +42,10 @@ public class Main {
             System.out.println("no valid dir found!");
             return;
         }
-        String project = "";
         for(File secondaryDir:list){
             File entryJsonFile = new File(secondaryDir.getPath()+"\\entry.json");
             JSONObject entryJson = JSONObject.parseObject(readFileContent(entryJsonFile));
             String title = entryJson.getString("title");//【吴恩达团队Tensorflow2.0实践系列课程第二课】卷积神经网络在TensorFlow2.0中的应用
-            project = title;
             String type_tag = entryJson.getString("type_tag");//64
             JSONObject page_data = entryJson.getJSONObject("page_data");//{...}
             String part = page_data.getString("part");//0 Introduction, A conversation with Andrew Ng
@@ -60,7 +58,7 @@ public class Main {
             bat.append(cmd).append(System.lineSeparator());
         }
         bat.append("pause>nul");
-        string2File(bat.toString(),dir.getParent()+"\\"+project+"\\"+"extract.bat");
+        string2File(bat.toString(),dir.getPath()+"\\"+"extract.bat");
     }
 
     public static void string2File(String res, String filePath) {
