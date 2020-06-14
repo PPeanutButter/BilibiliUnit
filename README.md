@@ -1,6 +1,9 @@
 # BilibiliUnit
 Bilibili工具箱
 
+# 傻瓜式用法
+将你要处理的文件夹拖到xxx.bat文件上（相当于输入了一遍代码，xxx是你要选择的函数名称），后续点击其他.bat文件还是需要的。
+
 # 支持的功能
 ## extract(类似唧唧下载器，但是比唧唧下载器要快10x)
 > 使用ffmpeg合成bililbili缓存音视频文件（在device\内部存储设备\Android\data\tv.danmaku.bili\download）（需要配置好ffmpeg的环境变量），会在上一级目录生成一个视频名称文件夹，同时文件夹下有.bat(for windows)文件，双击运行等待即可
