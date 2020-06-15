@@ -18,6 +18,7 @@ public class Main {
                 help();
             }
         }
+        System.out.println("Process finished...");
     }
 
     private static void combine(File dir){

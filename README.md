@@ -32,3 +32,7 @@ example
 `java -jar BilibiliUnit.jar combine E:\video\吴恩达团队Tensorflow2.0实践系列课程第一课`
 
 会在同目录下生成`吴恩达团队Tensorflow2.0实践系列课程第一课.mkv`文件
+
+## combines(指定小文件合成)
+> combine默认是合成目录下所有视频文件，combines则可以合成指定视频文件。
+> 将选定好的视频文件拖到combines.bat即可
