@@ -5,61 +5,64 @@ import java.nio.charset.StandardCharsets;
 
 public class Main {
     public static void main(String[] args) {
-        switch (args[0]){
-            case "extract":{
+        switch (args[0]) {
+            case "extract": {
                 extract(new File(args[1]));
                 break;
             }
-            case "combine":{
+            case "combine": {
                 combine(new File(args[1]));
                 break;
             }
-            default:{
+            default: {
                 help();
             }
         }
         System.out.println("Process finished...");
     }
 
-    private static void combine(File dir){
+    private static void combine(File dir) {
         File[] list = dir.listFiles();
         StringBuilder bat = new StringBuilder();
-        if (list==null||list.length==0){
+        if (list == null || list.length == 0) {
             System.out.println("no valid dir found!");
             return;
         }
         bat.append("(for %%i in (*.mkv) do @echo file '%%i') > combine_task_list.txt").append(System.lineSeparator());
-        bat.append(String.format("ffmpeg -f concat -safe 0 -i combine_task_list.txt -c copy %s.mkv",dir.getName()));
+        bat.append(String.format("ffmpeg -f concat -safe 0 -i combine_task_list.txt -c copy %s.mkv", dir.getName()));
         bat.append(System.lineSeparator());
         bat.append("del combine_task_list.txt").append(System.lineSeparator());
-        bat.append("pause>nul");
-        string2File(bat.toString(),dir.getPath()+"/"+"combine.bat");
+        string2File(bat.toString(), dir.getPath() + "/" + "combine.bat");
     }
 
-    private static void extract(File dir){
+    private static void extract(File dir) {
         File[] list = dir.listFiles();
         StringBuilder bat = new StringBuilder();
-        if (list==null||list.length==0){
+        if (list == null || list.length == 0) {
             System.out.println("no valid dir found!");
             return;
         }
-        for(File secondaryDir:list){
-            File entryJsonFile = new File(secondaryDir.getPath()+"\\entry.json");
+        for (File secondaryDir : list) {
+            File entryJsonFile = new File(secondaryDir.getPath() + "\\entry.json");
             JSONObject entryJson = JSONObject.parseObject(readFileContent(entryJsonFile));
-            String title = entryJson.getString("title");//【吴恩达团队Tensorflow2.0实践系列课程第二课】卷积神经网络在TensorFlow2.0中的应用
-            String type_tag = entryJson.getString("type_tag");//64
-            JSONObject page_data = entryJson.getJSONObject("page_data");//{...}
-            String part = page_data.getString("part");//0 Introduction, A conversation with Andrew Ng
-            String video = secondaryDir.getPath()+"\\"+type_tag+"/video.m4s";
-            String audio = secondaryDir.getPath()+"\\"+type_tag+"/audio.m4s";
+            String title = entryJson.getString("title");
+            String type_tag = entryJson.getString("type_tag");
+            JSONObject page_data = entryJson.getJSONObject("page_data");
+            String part = page_data.getString("part");
+            System.out.println(part);
+            String video = secondaryDir.getPath() + "\\" + type_tag + "/video.m4s";
+            String audio = secondaryDir.getPath() + "\\" + type_tag + "/audio.m4s";
             //noinspection ResultOfMethodCallIgnored
-            new File(dir.getParent()+"\\"+title).mkdirs();
-            String output = dir.getParent()+"/"+title+"/"+part+".mkv";
-            String cmd = String.format("ffmpeg -i \"%s\" -i \"%s\" -c:v copy -c:a copy \"%s\"",video,audio,output);
+            new File(dir.getParent() + "\\" + title).mkdirs();
+            String output = dir.getParent() + "/" + title + "/" + part + ".mkv";
+            String cmd = String.format("ffmpeg -i \"%s\" -i \"%s\" -c:v copy -c:a copy \"%s\"", video, audio, output);
             bat.append(cmd).append(System.lineSeparator());
         }
-        bat.append("pause>nul");
-        string2File(bat.toString(),dir.getPath()+"\\"+"extract.bat");
+        bat.append("echo 按任意键清理临时文件...").append(System.lineSeparator());
+        bat.append("pause>nul").append(System.lineSeparator());
+        bat.append("del ").append(dir.getPath()).append("\\")
+                .append("extract.bat").append(System.lineSeparator());
+        string2File(bat.toString(), dir.getPath() + "\\" + "extract.bat");
     }
 
     public static void string2File(String res, String filePath) {
@@ -117,7 +120,7 @@ public class Main {
         return "";
     }
 
-    private static void help(){
+    private static void help() {
         System.out.println("support commands:");
         System.out.println("help                              this doc");
         System.out.println("extract[dir:numerical_name]         extract video with audio(from cache directory)to runnable ffmpeg command line");

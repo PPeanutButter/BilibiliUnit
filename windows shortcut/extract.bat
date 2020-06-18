@@ -1,3 +1,3 @@
-java -jar Bilibili.jar extract "%1"
+java -jar BilibiliUnit.jar extract "%1"
 %1\extract.bat
 pause>nul
