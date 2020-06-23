@@ -1,2 +1,2 @@
-java -jar Bilibili.jar combine "%1"
+java -jar "%bilibili_unit%" combine "%1"
 pause>nul

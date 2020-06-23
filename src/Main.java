@@ -38,6 +38,7 @@ public class Main {
     private static void extract(File dir) {
         File[] list = dir.listFiles();
         StringBuilder bat = new StringBuilder();
+        bat.append("chcp 65001").append(System.lineSeparator());
         if (list == null || list.length == 0) {
             System.out.println("no valid dir found!");
             return;
@@ -73,7 +74,7 @@ public class Main {
             if (!distFile.getParentFile().exists()) //noinspection ResultOfMethodCallIgnored
                 distFile.getParentFile().mkdirs();
             bufferedReader = new BufferedReader(new StringReader(res));
-            bufferedWriter = new BufferedWriter(new FileWriter(distFile));
+            bufferedWriter = new BufferedWriter(new FileWriter(distFile,StandardCharsets.UTF_8));
             char[] buf = new char[1024];
             int len;
             while ((len = bufferedReader.read(buf)) != -1) {
