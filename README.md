@@ -10,13 +10,14 @@ Bilibili工具箱
 参照源代码或者BAT文件
 
 # 支持的功能
-## extract(类似唧唧下载器，但是比唧唧下载器要快10x)
+## extract(缓存提取)
+> 使用官方APP缓存实现下载，解决唧唧下载器等第三方下载器被封导致的下载缓慢的问题。
 > 使用ffmpeg合成bililbili缓存音视频文件（在手机\内部存储设备\Android\data\tv.danmaku.bili\download）
 >（需要配置好ffmpeg的环境变量）
 
 注：传入的文件路径最后名称是数字，如95051759。在同级目录生成文件夹。
 
-## extractP
+## extractP（分P提取）
 > 要求同extract，但是生成的文件名前有P1，P2之类的，便于文件名排序
 
 ## combine(小文件合成)
