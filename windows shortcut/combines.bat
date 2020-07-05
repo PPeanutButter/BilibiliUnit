@@ -1,3 +1,4 @@
+chcp 65001
 %generate file lists%
 (for %%i in (%*) do @echo file '%%~i') > combines_task_list.txt
 %run ffmpeg commands%

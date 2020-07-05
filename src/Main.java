@@ -7,7 +7,11 @@ public class Main {
     public static void main(String[] args) {
         switch (args[0]) {
             case "extract": {
-                extract(new File(args[1]));
+                extract(new File(args[1]),false);
+                break;
+            }
+            case "extractP": {
+                extract(new File(args[1]),true);
                 break;
             }
             case "combine": {
@@ -35,7 +39,7 @@ public class Main {
         string2File(bat.toString(), dir.getPath() + "/" + "combine.bat");
     }
 
-    private static void extract(File dir) {
+    private static void extract(File dir,boolean withPage) {
         File[] list = dir.listFiles();
         StringBuilder bat = new StringBuilder();
         bat.append("chcp 65001").append(System.lineSeparator());
@@ -49,13 +53,16 @@ public class Main {
             String title = entryJson.getString("title");
             String type_tag = entryJson.getString("type_tag");
             JSONObject page_data = entryJson.getJSONObject("page_data");
+            int page = page_data.getInteger("page");
+            String Page = "";
+            if (withPage) Page = "P"+page+" ";
             String part = page_data.getString("part");
             System.out.println(part);
             String video = secondaryDir.getPath() + "\\" + type_tag + "/video.m4s";
             String audio = secondaryDir.getPath() + "\\" + type_tag + "/audio.m4s";
             //noinspection ResultOfMethodCallIgnored
             new File(dir.getParent() + "\\" + title).mkdirs();
-            String output = dir.getParent() + "/" + title + "/" + part + ".mkv";
+            String output = dir.getParent() + "/" + title + "/" + Page + part + ".mkv";
             String cmd = String.format("ffmpeg -i \"%s\" -i \"%s\" -c:v copy -c:a copy \"%s\"", video, audio, output);
             bat.append(cmd).append(System.lineSeparator());
         }
