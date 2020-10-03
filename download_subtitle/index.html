@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" content="width=device-width, initial-scale=1" name="viewport"/>
+        <link href="material-components-web.min.css" rel="stylesheet"/>
+        <link href="https://www.bilibili.com/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <title>
+            哔哩哔哩-单独下载弹幕
+        </title>
+        <script src="material-components-web.min.js">
+        </script>
+    </head>
+    <body>
+        <noscript>
+            You need to enable JavaScript to run this app.
+        </noscript>
+        <div>
+            <label style="width: 100%;" class="mdc-text-field mdc-text-field--outlined input options-input">
+            <input aria-labelledby="my-label-id" class="mdc-text-field__input" type="text">
+                <span class="mdc-notched-outline">
+                    <span class="mdc-notched-outline__leading">
+                    </span>
+                    <span class="mdc-notched-outline__notch">
+                        <span class="mdc-floating-label" id="my-label-id">
+                            输入AV号或BV号
+                        </span>
+                    </span>
+                    <span class="mdc-notched-outline__trailing">
+                    </span>
+                </span>
+            </input>
+        </label>
+        <button onclick="exchange()" class="mdc-button mdc-button--raised" style="margin-top: 10px;width: 100%;">
+                    <div class="mdc-button__ripple">
+                    </div>
+                    <span class="mdc-button__label">
+                        下载xml弹幕@花生酱啊
+                    </span>
+                </button>
+        </div>
+        <div class="mdc-snackbar">
+            <div class="mdc-snackbar__surface">
+                <div aria-live="polite" class="mdc-snackbar__label" id="error-msg" role="status">
+                </div>
+                <div class="mdc-snackbar__actions">
+                    <button class="action-btn mdc-button mdc-snackbar__action" type="button">
+                        <div class="mdc-button__ripple">
+                        </div>
+                        <span class="mdc-button__label" id="error-button-msg">
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script src="jquery.min.js" type="text/javascript">
+        </script>
+        <script src="event.js">
+        </script>
+        <script>
+            const buttons = document.querySelectorAll('.mdc-button');
+            for (const button of buttons) {
+                mdc.ripple.MDCRipple.attachTo(button);
+            }
+            const textFields = document.querySelectorAll('.mdc-text-field');
+            for (const textField of textFields) {
+                mdc.textField.MDCTextField.attachTo(textField);
+            }
+        </script>
+        <script>
+            const table = [...'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'];
+            const s = [11, 10, 3, 8, 4, 6];
+            const xor = 177451812;
+            const add = 8728348608;
+
+            const av2bv = (av) => {
+                let num = NaN;
+                if (Object.prototype.toString.call(av) === '[object Number]') {
+                    num = av;
+                } else if (Object.prototype.toString.call(av) === '[object String]') {
+                    num = parseInt(av.replace(/[^0-9]/gu, ''));
+                };
+                if (isNaN(num) || num <= 0) {
+                    return '¿你在想桃子?';
+                };
+
+                num = (num ^ xor) + add;
+                let result = [...'bv1  4 1 7  '];
+                let i = 0;
+                while (i < 6) {
+
+                    result[s[i]] = table[Math.floor(num / 58 ** i) % 58];
+                    i += 1;
+                };
+                return result.join('');
+            };
+
+            const bv2av = (bv) => {
+                let str = '';
+                if (bv.length === 12) {
+                    str = bv;
+                } else if (bv.length === 10) {
+                    str = `BV${bv}`;
+
+                } else if (bv.length === 9) {
+                    str = `BV1${bv}`;
+                } else {
+                    return '¿你在想桃子?';
+                };
+                if (!str.match(/[Bb][Vv][fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF]{10}/gu)) {
+                    return '¿你在想桃子?';
+                };
+
+                let result = 0;
+                let i = 0;
+                while (i < 6) {
+                    result += table.indexOf(str[s[i]]) * 58 ** i;
+                    i += 1;
+                };
+                return `${result - add ^ xor}`;
+            };
+
+            function exchange(){
+                var aid = "";
+                var x = $('.mdc-text-field__input').val();
+                console.log(x);
+                if (x.substring(0, 2).toLowerCase() == 'bv') {
+                    aid = `${bv2av(x)}`;
+                } else if (x.substring(0, 2).toLowerCase() == 'av') {
+                    aid = x.substring(2);
+                }
+                console.log("aid="+aid);
+                var cid = "";
+                $.get("https://www.bilibili.com/widget/getPageList?aid="+aid, function(data){
+                    console.log("<- " + data);
+                    cid = eval(data)[0].cid
+                    console.log("cid="+cid);
+                    // http://comment.bilibili.com/rolldate,cid
+                    // http://comment.bilibili.com/dmroll,time,cid
+                    // http://comment.bilibili.com/cid.xml
+                    window.location.href = "http://comment.bilibili.com/"+cid+".xml";
+                }).fail(function(response) {
+                    console.log('<- 错误:'+response.status+' '+response.statusText);
+                });
+            };
+        </script>
+    </body>
+</html>
